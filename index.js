@@ -15,7 +15,6 @@ app.use(cors());
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
-const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome';
 
 
 const db = new sqlite3.Database('./webscrDB.sqlite', (err) => {
@@ -93,16 +92,16 @@ async function scrapeDEI(username, password) {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: CHROME_PATH,
+            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
             args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-gpu',
-                '--window-size=1920,1080',
-                '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
-            ]
-        });
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-gpu',
+              '--window-size=1920,1080',
+              '--disable-blink-features=AutomationControlled',
+              '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
+            ],
+          });
 
         const page = await browser.newPage();
         await page.goto('https://mydei.dei.gr/el/login/', { waitUntil: 'networkidle2' });
@@ -143,18 +142,18 @@ async function scrapeDEI(username, password) {
 
 async function scrapeCosmote(username, password) {
     try {
-    const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: CHROME_PATH,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-gpu',
-            '--window-size=1920,1080',
-            '--disable-blink-features=AutomationControlled',
-            '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
-        ]
-        });
+        const browser = await puppeteer.launch({
+            headless: true,
+            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-gpu',
+              '--window-size=1920,1080',
+              '--disable-blink-features=AutomationControlled',
+              '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
+            ],
+          });
         const page = await browser.newPage();
         await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2' });
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -213,16 +212,16 @@ async function scrapeDeyap(username, password) {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: CHROME_PATH,
+            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
             args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-gpu',
-                '--window-size=1920,1080',
-                '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
-            ]
-        });
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-gpu',
+              '--window-size=1920,1080',
+              '--disable-blink-features=AutomationControlled',
+              '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
+            ],
+          });
         const page = await browser.newPage();
 
         await page.goto('https://deyaponline.gr/login', { waitUntil: 'networkidle2' });

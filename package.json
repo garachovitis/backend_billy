@@ -9,8 +9,8 @@
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sqlite3": "^5.1.7"
   },
-  "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome",
-    "start": "node index.js"
-  }
+"scripts": {
+  "postinstall": "npx puppeteer install",
+  "start": "node index.js"
+}
 }
