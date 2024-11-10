@@ -3,6 +3,8 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
+const puppeteer = require('puppeteer');
+puppeteer.launch({ executablePath: '/opt/render/.cache/puppeteer/chrome-linux/chrome' });
 
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
