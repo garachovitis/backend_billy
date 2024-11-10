@@ -39,15 +39,30 @@ const db = new sqlite3.Database('./webscrDB.sqlite', (err) => {
     }
 });
 
-const insertCategoriesQuery = `
-  INSERT INTO categories (name, emoji) VALUES
-  ('Οικία', '🏠'),
-  ('Γραφείο', '💼'),
-  ('Ξενοδοχείο', '🏨'),
-  ('Εξοχική κατοικία', '🏡'),
-  ('Αυτοκίνητο', '🚗'),
-  ('Φοιτητικό Σπίτι', '🏢');
-`;
+const checkCategoriesQuery = `SELECT COUNT(*) as count FROM categories`;
+
+db.get(checkCategoriesQuery, (err, row) => {
+    if (err) {
+        console.error('Error checking categories:', err.message);
+    } else if (row.count === 0) {
+        const insertCategoriesQuery = `
+            INSERT INTO categories (name, emoji) VALUES
+            ('Οικία', '🏠'),
+            ('Γραφείο', '💼'),
+            ('Ξενοδοχείο', '🏨'),
+            ('Εξοχική κατοικία', '🏡'),
+            ('Αυτοκίνητο', '🚗'),
+            ('Φοιτητικό Σπίτι', '🏢');
+        `;
+        db.run(insertCategoriesQuery, (err) => {
+            if (err) {
+                console.error('Error inserting categories:', err.message);
+            } else {
+                console.log('Categories inserted successfully.');
+            }
+        });
+    }
+});
 
 db.run(insertCategoriesQuery, (err) => {
     if (err) {
