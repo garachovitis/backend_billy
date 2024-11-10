@@ -8,5 +8,9 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sqlite3": "^5.1.7"
+  },
+  "scripts": {
+    "postinstall": "npx puppeteer install",
+    "start": "node server.js"
   }
 }
