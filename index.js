@@ -14,7 +14,8 @@ app.use(cors());
 
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
-const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome';
+const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-1300.0.6723.116
+// const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome';
 
 
 const db = new sqlite3.Database('./webscrDB.sqlite', (err) => {
