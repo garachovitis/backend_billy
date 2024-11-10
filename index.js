@@ -92,7 +92,6 @@ async function scrapeDEI(username, password) {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
@@ -144,7 +143,6 @@ async function scrapeCosmote(username, password) {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
@@ -212,7 +210,6 @@ async function scrapeDeyap(username, password) {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.CHROME_BIN || '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome',
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
