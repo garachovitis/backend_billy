@@ -98,8 +98,9 @@ async function scrapeDEI(username, password) {
                 '--disable-gpu',
                 '--window-size=1920,1080',
                 '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
             ],
+            executablePath: '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome'
         });
         const page = await browser.newPage();
         await page.goto('https://mydei.dei.gr/el/login/', { waitUntil: 'networkidle2' });
@@ -143,13 +144,14 @@ async function scrapeCosmote(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             args: [
-                '--window-size=1920,1080',
-                '--disable-gpu',
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
+                '--disable-gpu',
+                '--window-size=1920,1080',
                 '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
             ],
+            executablePath: '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome'
         });
         const page = await browser.newPage();
         await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2' });
@@ -210,13 +212,14 @@ async function scrapeDeyap(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             args: [
-                '--window-size=1920,1080',
-                '--disable-gpu',
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
+                '--disable-gpu',
+                '--window-size=1920,1080',
                 '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.116 Safari/537.36'
             ],
+            executablePath: '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome'
         });
         const page = await browser.newPage();
 
