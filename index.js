@@ -198,7 +198,7 @@ async function scrapeCosmote(username, password) {
         });
 
         // Αναμονή για την ολοκλήρωση της πλοήγησης μετά το login
-        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 90000 }); // Timeout 90 δευτερόλεπτα
+        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 190000 }); // Timeout 90 δευτερόλεπτα
         
         // Καθυστέρηση πριν την πλοήγηση στον πίνακα ελέγχου
         await new Promise(resolve => setTimeout(resolve, 10000)); // 10 δευτερόλεπτα
