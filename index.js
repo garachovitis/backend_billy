@@ -147,7 +147,7 @@ async function scrapeCosmote(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
-            protocolTimeout: 600000, // Αύξηση του timeout σε 60 δευτερόλεπτα
+            protocolTimeout: 900000, // Αύξηση του timeout σε 60 δευτερόλεπτα
 
             args: [
                 '--no-sandbox',
