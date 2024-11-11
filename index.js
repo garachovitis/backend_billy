@@ -160,7 +160,7 @@ async function scrapeCosmote(username, password) {
         });
         const page = await browser.newPage();
         await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2' });
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise(resolve => setTimeout(resolve, 100000));
 
         await page.type('#login', username);
         await page.evaluate(() => {
