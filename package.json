@@ -10,7 +10,7 @@
     "sqlite3": "^5.1.7"
   },
 "scripts": {
-  "postinstall": "npx puppeteer browsers install chrome",
+  "postinstall": "rm -rf /opt/render/.cache/puppeteer && npx puppeteer browsers install chrome",
   "start": "node index.js"
 }
 }
