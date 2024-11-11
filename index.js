@@ -94,6 +94,7 @@ async function scrapeDEI(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
+            protocolTimeout: 600000,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -146,6 +147,8 @@ async function scrapeCosmote(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
+            protocolTimeout: 600000, // Αύξηση του timeout σε 60 δευτερόλεπτα
+
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -214,6 +217,7 @@ async function scrapeDeyap(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
+            protocolTimeout: 90000, // Αύξηση του timeout σε 60 δευτερόλεπτα
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
