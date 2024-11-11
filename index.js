@@ -110,7 +110,7 @@ async function scrapeDEI(username, password) {
         const acceptCookiesButton = await page.$('#onetrust-accept-btn-handler');
         if (acceptCookiesButton) {
             await acceptCookiesButton.click();
-            await new Promise(resolve => setTimeout(resolve, 4000));
+            await new Promise(resolve => setTimeout(resolve, 9000));
         }
 
         await page.type('#loginModel_Username', username);
@@ -157,7 +157,7 @@ async function scrapeCosmote(username, password) {
         });
         const page = await browser.newPage();
         await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2' });
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
         await page.type('#login', username);
         await page.evaluate(() => {
@@ -175,7 +175,7 @@ async function scrapeCosmote(username, password) {
 
         await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2' });
 
-        await new Promise(resolve => setTimeout(resolve, 9000));
+        await new Promise(resolve => setTimeout(resolve, 19000));
 
         const billingInfo = await page.evaluate(() => {
             const bills = [];
