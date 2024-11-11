@@ -17,6 +17,10 @@ const PORT = process.env.PORT || 3000;
 const CHROME_PATH = process.env.CHROME_PATH; // Χρήση της μεταβλητής περιβάλλοντος
 // const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome';
 
+app.use((req, res, next) => {
+    res.setTimeout(120000); // Θέτει χρονικό όριο 2 λεπτών για όλα τα αιτήματα (120.000 ms)
+    next();
+});
 
 const db = new sqlite3.Database('./webscrDB.sqlite', (err) => {
     if (err) {
