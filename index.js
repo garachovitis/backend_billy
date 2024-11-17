@@ -319,8 +319,8 @@ app.post('/api/add-category', (req, res) => {
 
 // Ενημέρωση της βάσης δεδομένων για τη δημιουργία του πίνακα κατηγοριών (εάν δεν υπάρχει)
 db.run(`CREATE TABLE IF NOT EXISTS categories (
-    categoryid INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
+    categoryid INTEGER PRIMARY KEY AUTOINCREMENT,
     emoji TEXT
 )`);
 
