@@ -203,7 +203,7 @@ async function scrapeCosmote(username, password) {
         // Καθυστέρηση πριν την πλοήγηση στον πίνακα ελέγχου
         await new Promise(resolve => setTimeout(resolve, 10000)); // 10 δευτερόλεπτα
         
-        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 90000 }); // Timeout 90 δευτερόλεπτα
+        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 190000 }); // Timeout 90 δευτερόλεπτα
 
         // Επιπλέον καθυστέρηση για φόρτωση των στοιχείων
         await new Promise(resolve => setTimeout(resolve, 15000)); // 15 δευτερόλεπτα
@@ -293,7 +293,36 @@ async function scrapeDeyap(username, password) {
 }
 
 
+// Νέο endpoint για προσθήκη νέας κατηγορίας
+app.post('/api/add-category', (req, res) => {
+    const { name, emoji } = req.body;
 
+    if (!name || !emoji) {
+        return res.status(400).json({ status: 'error', message: 'Name and emoji are required' });
+    }
+
+    const query = `INSERT INTO categories (name, emoji) VALUES (?, ?)`;
+
+    db.run(query, [name, emoji], function (err) {
+        if (err) {
+            console.error('Error inserting category:', err.message);
+            return res.status(500).json({ status: 'error', message: 'Error adding category' });
+        }
+
+        return res.json({ 
+            status: 'success', 
+            message: 'Category added successfully', 
+            categoryId: this.lastID // Επιστρέφουμε το ID της νέας κατηγορίας
+        });
+    });
+});
+
+// Ενημέρωση της βάσης δεδομένων για τη δημιουργία του πίνακα κατηγοριών (εάν δεν υπάρχει)
+db.run(`CREATE TABLE IF NOT EXISTS categories (
+    categoryid INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    emoji TEXT
+)`);
 
 
 app.post('/api/save', async (req, res) => {
