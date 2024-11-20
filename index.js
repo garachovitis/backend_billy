@@ -18,7 +18,7 @@ const CHROME_PATH = process.env.CHROME_PATH; // Χρήση της μεταβλη
 // const CHROME_PATH = '/opt/render/.cache/puppeteer/chrome/linux-130.0.6723.116/chrome-linux64/chrome';
 
 app.use((req, res, next) => {
-    res.setTimeout(120000); // Θέτει χρονικό όριο 2 λεπτών για όλα τα αιτήματα (120.000 ms)
+    res.setTimeout(200000); // Θέτει χρονικό όριο 2 λεπτών για όλα τα αιτήματα (120.000 ms)
     next();
 });
 
@@ -98,7 +98,7 @@ async function scrapeDEI(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
-            protocolTimeout: 600000,
+            protocolTimeout: 900000,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -151,7 +151,7 @@ async function scrapeCosmote(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH,
-            protocolTimeout: 900000, // Αύξηση του timeout σε 15 λεπτά
+            protocolTimeout: 1000000, // Αύξηση του timeout σε 15 λεπτά
 
             args: [
                 '--no-sandbox',
@@ -246,7 +246,7 @@ async function scrapeDeyap(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH, // Χρήση της σωστής διαδρομής
-            protocolTimeout: 90000, // Αύξηση του timeout σε 60 δευτερόλεπτα
+            protocolTimeout: 1000000, // Αύξηση του timeout σε 60 δευτερόλεπτα
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
