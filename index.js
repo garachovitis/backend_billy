@@ -53,29 +53,33 @@ app.get('/', (req, res) => {
 });
 
 
-async function saveBillingData(service, username, password, newData) {
+async function saveBillingDataCosmote(service, username, password, bills) {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newDueDate = newData.dueDate;
-        const newPaymentAmount = newData.paymentAmount;
 
-        const queryCheck = `SELECT * FROM billing_info WHERE service = ? AND data LIKE ?`;
-        db.get(queryCheck, [service, `%${newDueDate}%${newPaymentAmount}%`], (err, row) => {
-            if (err) {
-                console.error('Error checking data:', err.message);
-            } else if (row) {
-                console.log(`Entry already exists for service: ${service} with dueDate: ${newDueDate} and paymentAmount: ${newPaymentAmount}`);
-            } else {
-                const queryInsert = `INSERT INTO billing_info (service, username, password, data) VALUES (?, ?, ?, ?)`;
-                db.run(queryInsert, [service, username, hashedPassword, JSON.stringify(newData)], function (err) {
-                    if (err) {
-                        console.error('Error inserting data:', err.message);
-                    } else {
-                        console.log(`Saved data for ${service} - Username: ${username}`);
-                    }
-                });
-            }
-        });
+        for (const bill of bills) {
+            const { connection, billNumber, totalAmount, dueDate } = bill;
+
+            const queryCheck = `SELECT * FROM billing_info WHERE service = ? AND data LIKE ?`;
+            const dataString = JSON.stringify({ connection, billNumber, totalAmount, dueDate });
+
+            db.get(queryCheck, [service, `%${connection}%${billNumber}%`], (err, row) => {
+                if (err) {
+                    console.error('Error checking data:', err.message);
+                } else if (row) {
+                    console.log(`Entry already exists for service: ${service}, connection: ${connection}, billNumber: ${billNumber}`);
+                } else {
+                    const queryInsert = `INSERT INTO billing_info (service, username, password, data) VALUES (?, ?, ?, ?)`;
+                    db.run(queryInsert, [service, username, hashedPassword, dataString], function (err) {
+                        if (err) {
+                            console.error('Error inserting data:', err.message);
+                        } else {
+                            console.log(`Saved data for ${service} - Username: ${username}, Connection: ${connection}, BillNumber: ${billNumber}`);
+                        }
+                    });
+                }
+            });
+        }
     } catch (error) {
         console.error('Error hashing password:', error.message);
     }
@@ -337,7 +341,8 @@ app.post('/api/save', async (req, res) => {
     } else if (service === 'cosmote') {
         const result = await scrapeCosmote(username, password);
         if (result.status === 'success') {
-            await saveBillingData('cosmote', username, password, result.data);
+            // Αποθήκευση κάθε λογαριασμού ξεχωριστά
+            await saveBillingDataCosmote('cosmote', username, password, result.data);
         }
         return res.json(result);
     } else if (service === 'deyap') {
