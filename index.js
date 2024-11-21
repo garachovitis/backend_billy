@@ -87,14 +87,17 @@ async function saveBillingDataCosmote(service, username, password, bills) {
 }
 
 function cleanCosmoteData(bill) {
-    // Καθαρισμός totalAmount
-    const totalAmount = bill.totalAmount.replace(/[^\d,.]/g, '').replace(/,+/g, '.').trim(); // Καθαρισμός ακατάλληλων χαρακτήρων
-    const dueDate = parseDueDate(bill.dueDate); // Μετατροπή dueDate σε συγκεκριμένη μορφή
+    const totalAmount = bill.totalAmount
+        .replace(/[^\d,.]/g, '')
+        .replace(/,+/g, '.')
+        .trim();
+    const dueDate = parseDueDate(bill.dueDate);
 
     return {
-        ...bill,
-        totalAmount: parseFloat(totalAmount).toFixed(2) + '€', // Μορφοποίηση ως αριθμός με 2 δεκαδικά
-        dueDate, // Ενημερωμένο dueDate
+        connection: bill.connection || 'Unknown connection',
+        billNumber: bill.billNumber || 'Unknown bill number',
+        totalAmount: parseFloat(totalAmount).toFixed(2) + '€',
+        dueDate: dueDate || 'No due date',
     };
 }
 
