@@ -58,8 +58,9 @@ async function saveBillingDataCosmote(service, username, password, bills) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         for (const bill of bills) {
+            console.log('Raw bill data:', bill);
             const cleanedBill = cleanCosmoteData(bill); // Καθαρισμός δεδομένων
-            const { connection, billNumber, totalAmount, dueDate } = cleanedBill; // Ενημερωμένα δεδομένα
+            console.log('Cleaned bill data:', cleanedBill);            const { connection, billNumber, totalAmount, dueDate } = cleanedBill; // Ενημερωμένα δεδομένα
         
             const queryCheck = `SELECT * FROM billing_info WHERE service = ? AND data LIKE ?`;
             const dataString = JSON.stringify({ connection, billNumber, totalAmount, dueDate });
@@ -93,12 +94,14 @@ function cleanCosmoteData(bill) {
         .trim();
     const dueDate = parseDueDate(bill.dueDate);
 
-    return {
+    const cleanedData = {
         connection: bill.connection || 'Unknown connection',
         billNumber: bill.billNumber || 'Unknown bill number',
         totalAmount: parseFloat(totalAmount).toFixed(2) + '€',
         dueDate: dueDate || 'No due date',
     };
+    console.log('Cleaned Cosmote data:', cleanedData);
+    return cleanedData;
 }
 
 function parseDueDate(dueDate) {
@@ -111,8 +114,9 @@ function parseDueDate(dueDate) {
         const [day, month] = dueDate.split('/');
         return `${day}/${month}/${new Date().getFullYear()}`;
     }
+    console.log('Parsing due date:', dueDate);
     return dueDate; // Αν δεν αναγνωριστεί, επιστρέφουμε όπως είναι
-}
+    }
 
 
 function getBillingData(callback) {
@@ -122,6 +126,7 @@ function getBillingData(callback) {
             console.error('Error fetching data:', err.message);
             callback(err, null);
         } else {
+            console.log('Fetched billing data:', rows);
             callback(null, rows);
         }
     });
@@ -403,7 +408,8 @@ app.get('/billing-info', (req, res) => {
         if (err) {
             return res.status(500).json({ status: 'error', message: 'Error fetching data' });
         } else {
-            return res.json({ status: 'success', data });
+            console.log('Sending billing info to client:', data);
+        return res.json({ status: 'success', data });
         }
     });
 });
