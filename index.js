@@ -58,11 +58,12 @@ async function saveBillingDataCosmote(service, username, password, bills) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         for (const bill of bills) {
-            const { connection, billNumber, totalAmount, dueDate } = bill;
-
+            const cleanedBill = cleanCosmoteData(bill); // Καθαρισμός δεδομένων
+            const { connection, billNumber, totalAmount, dueDate } = cleanedBill; // Ενημερωμένα δεδομένα
+        
             const queryCheck = `SELECT * FROM billing_info WHERE service = ? AND data LIKE ?`;
             const dataString = JSON.stringify({ connection, billNumber, totalAmount, dueDate });
-
+        
             db.get(queryCheck, [service, `%${connection}%${billNumber}%`], (err, row) => {
                 if (err) {
                     console.error('Error checking data:', err.message);
@@ -84,6 +85,32 @@ async function saveBillingDataCosmote(service, username, password, bills) {
         console.error('Error hashing password:', error.message);
     }
 }
+
+function cleanCosmoteData(bill) {
+    // Καθαρισμός totalAmount
+    const totalAmount = bill.totalAmount.replace(/[^\d,.]/g, '').replace(/,+/g, '.').trim(); // Καθαρισμός ακατάλληλων χαρακτήρων
+    const dueDate = parseDueDate(bill.dueDate); // Μετατροπή dueDate σε συγκεκριμένη μορφή
+
+    return {
+        ...bill,
+        totalAmount: parseFloat(totalAmount).toFixed(2) + '€', // Μορφοποίηση ως αριθμός με 2 δεκαδικά
+        dueDate, // Ενημερωμένο dueDate
+    };
+}
+
+function parseDueDate(dueDate) {
+    if (dueDate.includes('αύριο')) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return tomorrow.toLocaleDateString('el-GR'); // Μορφή DD/MM/YYYY
+    } else if (dueDate.match(/\d{2}\/\d{2}/)) {
+        // Αν ήδη έχει μορφή DD/MM, προσθέτουμε το τρέχον έτος
+        const [day, month] = dueDate.split('/');
+        return `${day}/${month}/${new Date().getFullYear()}`;
+    }
+    return dueDate; // Αν δεν αναγνωριστεί, επιστρέφουμε όπως είναι
+}
+
 
 function getBillingData(callback) {
     const query = `SELECT billingid,service, username, data, categories FROM billing_info`;
@@ -132,18 +159,30 @@ async function scrapeDEI(username, password) {
         await page.goto('https://mydei.dei.gr/el/', { waitUntil: 'networkidle2' });
 
         const billingInfo = await page.evaluate(() => {
-            const accountNumber = document.querySelector('.e-card-type__txt')?.innerText.trim() || 'Not found';
-            const address = document.querySelector('.b-card__title')?.innerText.trim() || 'Not found';
-            const dueDate = document.querySelectorAll('.b-bill-sum-tiny__dd')[2]?.innerText.trim() || 'Not found';
-            const paymentAmount = document.querySelector('.e-card-total__number')?.innerText.trim() || 'Not found';
-
-            return { accountNumber, address, dueDate, paymentAmount };
+            const bills = [];
+            const cardSections = document.querySelectorAll('.cardWhite.withMargin.searchFilterBox');
+        
+            cardSections.forEach((card) => {
+                const connection = card.querySelector('.cardLabelDropdownEntry div')?.innerText.trim() || 'No connection';
+                const billNumber = card.querySelector('.cardLabel div')?.innerText.trim() || 'No bill number';
+                const amountUnits = card.querySelector('.amountUnits')?.innerText.trim() || '0';
+                const amountCents = card.querySelector('.amountCents')?.innerText.trim() || '00';
+                const totalAmount = `${amountUnits},${amountCents}€`;
+                const dueDate = card.querySelector('.cardText')?.innerText.trim() || 'No due date';
+        
+                bills.push({ connection, billNumber, totalAmount, dueDate });
+            });
+        
+            return bills;
         });
+        
+        // Καθαρισμός δεδομένων μετά το scraping
+        const cleanedBillingInfo = billingInfo.map(bill => cleanCosmoteData(bill)); 
+        console.log("Cosmote Billing Info:", cleanedBillingInfo);
+        
+        return { status: 'success', data: cleanedBillingInfo };
 
-        console.log("DEI Billing Info:", billingInfo);
-        await browser.close();
 
-        return { status: 'success', data: billingInfo };
     } catch (error) {
         console.error('Error during DEI scraping:', error.message);
         return { status: 'error', message: 'DEI scraping failed: ' + error.message };
