@@ -300,12 +300,12 @@ async function scrapeCosmote(username, password) {
         }
 
         // Καθυστέρηση για τη φόρτωση πριν την εισαγωγή του ονόματος χρήστη
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
 
         await page.type('#login', username);
         
         // Καθυστέρηση πριν το κλικ για επόμενη ενέργεια
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
         
         await page.evaluate(() => {
             document.querySelector('#next').click();
@@ -313,27 +313,27 @@ async function scrapeCosmote(username, password) {
 
         // Αναμονή για να εμφανιστεί το πεδίο κωδικού και καθυστέρηση πριν την εισαγωγή του
         await page.waitForSelector('#pwd', { visible: true });
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
 
         await page.type('#pwd', password);
 
         // Καθυστέρηση πριν την υποβολή
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
         
         await page.evaluate(() => {
             document.querySelector('#next').click();
         });
 
         // Αναμονή για την ολοκλήρωση της πλοήγησης μετά το login
-        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 1900000 }); // Timeout 90 δευτερόλεπτα
+        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 19000000 }); // Timeout 90 δευτερόλεπτα
         
         // Καθυστέρηση πριν την πλοήγηση στον πίνακα ελέγχου
-        await new Promise(resolve => setTimeout(resolve, 10000)); // 10 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 1000000)); // 10 δευτερόλεπτα
         
-        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 190000 }); // Timeout 90 δευτερόλεπτα
+        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 19000000 }); // Timeout 90 δευτερόλεπτα
 
         // Επιπλέον καθυστέρηση για φόρτωση των στοιχείων
-        await new Promise(resolve => setTimeout(resolve, 15000)); // 15 δευτερόλεπτα
+        await new Promise(resolve => setTimeout(resolve, 150000)); // 15 δευτερόλεπτα
 
         // Εξαγωγή δεδομένων λογαριασμού
         const billingInfo = await page.evaluate(() => {
