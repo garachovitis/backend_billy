@@ -278,6 +278,8 @@ async function scrapeCosmote(username, password) {
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: CHROME_PATH,
+            protocolTimeout: 1000000, // Αύξηση του timeout σε 15 λεπτά
+
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -290,30 +292,49 @@ async function scrapeCosmote(username, password) {
 
         const page = await browser.newPage();
         
-        // Μετάβαση στη σελίδα σύνδεσης
-        await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2', timeout: 120000 });
-        
-        // Αποδοχή cookies αν υπάρχει
+        // Μετάβαση στη σελίδα σύνδεσης και αποδοχή cookies χωρίς καθυστέρηση
+        await page.goto('https://account.cosmote.gr/el/user-login', { waitUntil: 'networkidle2', timeout: 90000 }); // Timeout 90 δευτερόλεπτα
         const acceptCookiesButton = await page.$('#onetrust-accept-btn-handler');
         if (acceptCookiesButton) {
             await acceptCookiesButton.click();
         }
 
-        // Εισαγωγή username και μετάβαση στο επόμενο βήμα
+        // Καθυστέρηση για τη φόρτωση πριν την εισαγωγή του ονόματος χρήστη
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
+
         await page.type('#login', username);
-        await page.click('#next');
+        
+        // Καθυστέρηση πριν το κλικ για επόμενη ενέργεια
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
+        
+        await page.evaluate(() => {
+            document.querySelector('#next').click();
+        });
 
-        // Αναμονή για το πεδίο κωδικού
-        await page.waitForSelector('#pwd', { visible: true, timeout: 60000 });
+        // Αναμονή για να εμφανιστεί το πεδίο κωδικού και καθυστέρηση πριν την εισαγωγή του
+        await page.waitForSelector('#pwd', { visible: true });
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
+
         await page.type('#pwd', password);
-        await page.click('#next');
 
-        // Αναμονή για ολοκλήρωση πλοήγησης
-        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 120000 });
+        // Καθυστέρηση πριν την υποβολή
+        await new Promise(resolve => setTimeout(resolve, 50000)); // 5 δευτερόλεπτα
         
-        // Μετάβαση στον πίνακα ελέγχου
-        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 120000 });
+        await page.evaluate(() => {
+            document.querySelector('#next').click();
+        });
+
+        // Αναμονή για την ολοκλήρωση της πλοήγησης μετά το login
+        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 19000000 }); // Timeout 90 δευτερόλεπτα
         
+        // Καθυστέρηση πριν την πλοήγηση στον πίνακα ελέγχου
+        await new Promise(resolve => setTimeout(resolve, 1000000)); // 10 δευτερόλεπτα
+        
+        await page.goto('https://my.cosmote.gr/selfcare/jsp/dashboard.jsp', { waitUntil: 'networkidle2', timeout: 19000000 }); // Timeout 90 δευτερόλεπτα
+
+        // Επιπλέον καθυστέρηση για φόρτωση των στοιχείων
+        await new Promise(resolve => setTimeout(resolve, 150000)); // 15 δευτερόλεπτα
+
         // Εξαγωγή δεδομένων λογαριασμού
         const billingInfo = await page.evaluate(() => {
             const bills = [];
@@ -346,8 +367,6 @@ async function scrapeCosmote(username, password) {
         return { status: 'error', message: 'Cosmote scraping failed: ' + error.message };
     }
 }
-
-
 
 async function scrapeDeyap(username, password) {
     try {
